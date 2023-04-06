@@ -41,7 +41,7 @@ public class PostController {
 @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMapping(@PathVariable long id){
         postService.deleteById(id);
-        return new ResponseEntity<>("deleted succesfully",HttpStatus.OK);
+        return new ResponseEntity<>("deleted successfully",HttpStatus.OK);
 }
 @GetMapping("/pagination")
     public PostResponse getAllThroughPagination(
