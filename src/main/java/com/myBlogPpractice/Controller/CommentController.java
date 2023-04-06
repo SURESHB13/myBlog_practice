@@ -30,6 +30,12 @@ return new ResponseEntity<CommentDto>(commentService.createComment(postId,commen
 public List<CommentDto>getCommentsByPostId(@PathVariable("postId")Long postId){
     return    commentService.getCommentsByPostId(postId);
 }
+    @GetMapping("/posts/{postId}/comments/{commentId}")
+
+    public CommentDto getCommentByCommentId(@PathVariable("postId")Long postId,@PathVariable("commentId")Long commentId){
+      return   commentService.getCommentByCommentId(postId,commentId);
+    }
+
 
 }
 
