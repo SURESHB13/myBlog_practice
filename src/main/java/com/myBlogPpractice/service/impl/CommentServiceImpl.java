@@ -82,5 +82,20 @@ throw new BlogAPIException(HttpStatus.BAD_REQUEST,"comment does not belong to th
         return  modelMapper.map(savedComment,CommentDto.class);
     }
 
+    @Override
+    public void deleteComment(long postId, long commentId) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new ResourceNotFoundException("Post", "id", postId)
+        );
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new ResourceNotFoundException("comment", "id", commentId)
+        );
+        if (!comment.getPost().getId().equals(post.getId()))
+        {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST,"comment not belongs to the post with a given id by you");
+        }
+        commentRepository.deleteById(commentId);
+    }
+
 
 }
