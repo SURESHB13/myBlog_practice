@@ -10,6 +10,8 @@ import com.myBlogPpractice.service.CommentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -25,7 +27,7 @@ private ModelMapper modelMapper;
     }
     @Override
     public CommentDto createComment(long postId, CommentDto commentDto) {
-        Comment comment = mapToEntity(commentDto);
+        Comment comment = modelMapper.map(commentDto,Comment.class);
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new ResourceNotFoundException("post","id",postId)
         );comment.setPost(post);
@@ -33,15 +35,15 @@ private ModelMapper modelMapper;
 
 
 
-        return mapToDto(newComment);
-    }
-    CommentDto mapToDto(Comment newComment) {
-        CommentDto map = modelMapper.map(newComment, CommentDto.class);
-        return map;
+        return modelMapper.map(newComment,CommentDto.class);
     }
 
-    Comment mapToEntity(CommentDto commentDto) {
-        Comment map = modelMapper.map(commentDto, Comment.class);
-        return map;
+    @Override
+    public List<CommentDto> getCommentsByPostId(Long postId) {
+        List<Comment> comments = commentRepository.findByPostId(postId);
+return comments.stream().map(comment ->
+        modelMapper.map(comment,CommentDto.class)).collect(Collectors.toList());
     }
+
+
 }
