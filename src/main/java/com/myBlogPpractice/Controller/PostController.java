@@ -2,6 +2,7 @@ package com.myBlogPpractice.Controller;
 
 import com.myBlogPpractice.Payload.PostDto;
 import com.myBlogPpractice.service.PostService;
+import com.myBlogPpractice.service.impl.PostResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,17 @@ public class PostController {
     public ResponseEntity<String> deleteMapping(@PathVariable long id){
         postService.deleteById(id);
         return new ResponseEntity<>("deleted succesfully",HttpStatus.OK);
+}
+@GetMapping("/pagination")
+    public PostResponse getAllThroughPagination(
+
+        @RequestParam(value = "pageNo",defaultValue = "10",required = false)int pageNo,
+        @RequestParam(value = "pageSize",defaultValue = "10",required = false)int pageSize,
+        @RequestParam(value = "sortBy",defaultValue = "id",required = false)String sortBy,
+        @RequestParam(value = "sortDir",defaultValue = "asc",required = false)String sortDir
+){
+PostResponse postResponse=postService.getAllThroughPagination(pageNo,pageSize,sortBy,sortDir);
+return  postResponse;
 }
 
 }

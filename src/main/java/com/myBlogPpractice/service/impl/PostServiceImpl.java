@@ -6,6 +6,9 @@ import com.myBlogPpractice.Payload.PostDto;
 import com.myBlogPpractice.Repositories.PostRepository;
 import com.myBlogPpractice.service.PostService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,6 +65,26 @@ return  collect;
                 () -> new ResourceNotFoundException("post", "id", id)
         );
         postRepository.deleteById(id);
+    }
+
+    @Override
+    public PostResponse getAllThroughPagination(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort=sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())?
+                Sort.by(sortBy).ascending():
+                Sort.by(sortBy).descending();
+        PageRequest pageable=PageRequest.of(pageNo,pageSize,sort);
+        Page<Post> content = postRepository.findAll(pageable);
+        List<Post> posts = content.getContent();
+        List<PostDto> dto = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+PostResponse postResponse=new PostResponse();
+postResponse.setContent(dto);
+postResponse.setPageNo(content.getNumber() );
+postResponse.setPageSize(content.getSize());
+postResponse.setTotalPages(content.getTotalPages());
+postResponse.setTotalElements((int)content.getTotalElements());
+postResponse.setLast(content.isLast());
+return postResponse;
+
     }
 
 
