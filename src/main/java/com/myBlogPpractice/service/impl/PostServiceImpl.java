@@ -56,5 +56,13 @@ return  collect;
         return modelMapper.map(post,PostDto.class);
     }
 
+    @Override
+    public void deleteById(long id) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("post", "id", id)
+        );
+        postRepository.deleteById(id);
+    }
+
 
 }
