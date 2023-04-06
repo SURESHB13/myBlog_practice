@@ -35,6 +35,15 @@ public List<CommentDto>getCommentsByPostId(@PathVariable("postId")Long postId){
     public CommentDto getCommentByCommentId(@PathVariable("postId")Long postId,@PathVariable("commentId")Long commentId){
       return   commentService.getCommentByCommentId(postId,commentId);
     }
+    //http://localhost:8096/api/posts/5/comments/5
+    @PutMapping("/posts/{postId}/comments/{commentId}")
+    public  ResponseEntity<CommentDto>updateComment(@PathVariable("postId")Long postId,
+                                                    @PathVariable("commentId")Long commentId,
+    @RequestBody CommentDto commentDto){
+     CommentDto commentDto1=commentService.updateComment(postId,commentId,commentDto);
+     return new ResponseEntity<>(commentDto1,HttpStatus.ACCEPTED);
+
+    }
 
 
 }

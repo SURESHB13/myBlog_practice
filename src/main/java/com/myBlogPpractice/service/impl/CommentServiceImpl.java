@@ -63,5 +63,24 @@ return comments.stream().map(comment ->
         return modelMapper.map(comment,CommentDto.class);
     }
 
+    @Override
+    public CommentDto updateComment(Long postId, Long commentId, CommentDto commentDto) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new ResourceNotFoundException("post", "id", postId)
+        );
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new ResourceNotFoundException("comment", "id", commentId)
+        );
+        if (!comment.getPost().getId().equals(post.getId()))
+        {
+throw new BlogAPIException(HttpStatus.BAD_REQUEST,"comment does not belong to the post with given PostId");
+        }
+        comment.setName(commentDto.getName());
+        comment.setEmail(commentDto.getEmail());
+        comment.setBody(commentDto.getBody());
+        Comment savedComment = commentRepository.save(comment);
+        return  modelMapper.map(savedComment,CommentDto.class);
+    }
+
 
 }
