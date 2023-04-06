@@ -48,5 +48,13 @@ return  collect;
        return modelMapper.map(updatedPost,PostDto.class);
     }
 
+    @Override
+    public PostDto getPostById(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("post", "id", id)
+        );
+        return modelMapper.map(post,PostDto.class);
+    }
+
 
 }
