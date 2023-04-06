@@ -26,7 +26,8 @@ public class PostController {
     public  ResponseEntity<List<PostDto>>GetAllPosts(){
         return new ResponseEntity<>(postService.getAllPosts(),HttpStatus.OK);
 }
-@PutMapping
+//http://localhost:8096/api/posts/{id}
+@PutMapping("/{id}")
     public ResponseEntity<PostDto>updatePost(@RequestBody PostDto postDto,@PathVariable("id") long id){
         return new ResponseEntity<>(postService.updatePost(postDto,id),HttpStatus.ACCEPTED);
 }

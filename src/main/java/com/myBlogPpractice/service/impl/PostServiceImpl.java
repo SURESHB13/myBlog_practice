@@ -1,6 +1,7 @@
 package com.myBlogPpractice.service.impl;
 
 import com.myBlogPpractice.Entities.Post;
+import com.myBlogPpractice.Exception.ResourceNotFoundException;
 import com.myBlogPpractice.Payload.PostDto;
 import com.myBlogPpractice.Repositories.PostRepository;
 import com.myBlogPpractice.service.PostService;
@@ -36,8 +37,15 @@ return  collect;
     }
 
     @Override
-    public PostDto updatePost(PostDto postDto, Long id) {
-        return null;
+    public PostDto updatePost(PostDto postdto, Long id) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("post", "id", id)
+        );
+        post.setContent(postdto.getContent());
+        post.setDescription(postdto.getDescription());
+        post.setTitle(postdto.getTitle());
+        Post updatedPost = postRepository.save(post);
+       return modelMapper.map(updatedPost,PostDto.class);
     }
 
 
