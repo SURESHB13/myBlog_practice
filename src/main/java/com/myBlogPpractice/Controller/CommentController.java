@@ -5,8 +5,10 @@ import com.myBlogPpractice.service.CommentService;
 import com.myBlogPpractice.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +24,10 @@ public class CommentController {
     }
 //http://localhost:8096/api/{postId}
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<CommentDto>createComment(@PathVariable(value = "postId") Long postId, @RequestBody CommentDto commentDto){
+    public ResponseEntity<?>createComment(@Valid @PathVariable(value = "postId") Long postId, @RequestBody CommentDto commentDto, BindingResult result){
+        if (result.hasErrors()){
+            return new ResponseEntity<>(result.getFieldError().getDefaultMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 return new ResponseEntity<CommentDto>(commentService.createComment(postId,commentDto), HttpStatus.CREATED);
 
     }
@@ -37,9 +42,14 @@ public List<CommentDto>getCommentsByPostId(@PathVariable("postId")Long postId){
     }
     //http://localhost:8096/api/posts/5/comments/5
     @PutMapping("/posts/{postId}/comments/{commentId}")
-    public  ResponseEntity<CommentDto>updateComment(@PathVariable("postId")Long postId,
+    public  ResponseEntity<?>updateComment(@Valid @PathVariable("postId")Long postId,
                                                     @PathVariable("commentId")Long commentId,
-    @RequestBody CommentDto commentDto){
+    @RequestBody CommentDto commentDto,
+                                                    BindingResult result
+    ){
+        if (result.hasErrors()){
+            return new ResponseEntity<>(result.getFieldError().getDefaultMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
      CommentDto commentDto1=commentService.updateComment(postId,commentId,commentDto);
      return new ResponseEntity<>(commentDto1,HttpStatus.ACCEPTED);
 

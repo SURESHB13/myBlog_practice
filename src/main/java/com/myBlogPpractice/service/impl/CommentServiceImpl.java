@@ -96,6 +96,11 @@ throw new BlogAPIException(HttpStatus.BAD_REQUEST,"comment does not belong to th
         }
         commentRepository.deleteById(commentId);
     }
+    public ResponseEntity<Post> getPostById(Long postId) {
+        Optional<Post> post = postRepository.findById(postId);
+        return post.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
 
 }

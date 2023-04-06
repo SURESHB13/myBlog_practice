@@ -5,8 +5,10 @@ import com.myBlogPpractice.service.PostService;
 import com.myBlogPpractice.service.impl.PostResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +22,12 @@ public class PostController {
 
 //http://localhost:8096/api/posts/
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
+    public ResponseEntity<?> createPost(@Valid @RequestBody PostDto postDto, BindingResult result){
+
+
+        if (result.hasErrors()){
+            return new ResponseEntity<>(result.getFieldError().getDefaultMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
 @GetMapping
@@ -29,7 +36,10 @@ public class PostController {
 }
 //http://localhost:8096/api/posts/{id}
 @PutMapping("/{id}")
-    public ResponseEntity<PostDto>updatePost(@RequestBody PostDto postDto,@PathVariable("id") long id){
+    public ResponseEntity<?>updatePost(@Valid @RequestBody PostDto postDto,@PathVariable("id") long id,BindingResult result){
+    if (result.hasErrors()){
+        return new ResponseEntity<>(result.getFieldError().getDefaultMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
         return new ResponseEntity<>(postService.updatePost(postDto,id),HttpStatus.ACCEPTED);
 }
 
